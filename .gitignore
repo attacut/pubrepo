@@ -1,0 +1,22 @@
+# Terraform wkdir
+**/.terraform/
+**/.terraform.lock.hcl
+
+# Terraform state files
+**/*.tfstate
+**/*.tfstate.backup
+
+# Sensitive variable files
+**/*.tfvars
+**/*.tfvars.json
+
+# Crash logs
+crash.log
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.bak
+*.tmp
+.DS_Store
