@@ -117,6 +117,53 @@ _internal_defaults_do_not_set:
   # Annotations to apply to all resources
   annotations: {}
 
+  # Monitoring configuration
+  monitoring:
+    enabled: true
+    path: "/stats/prometheus"
+    port: 15020
+    scrape: true
+
+  # Logging configuration
+  logging:
+    level: "info"
+    format: "json"
+    
+  # Health check configuration
+  healthCheck:
+    enabled: true
+    path: "/healthz/ready"
+    port: 15021
+    
+  # Traffic management
+  trafficManagement:
+    # Connection pool settings
+    connectionPool:
+      http:
+        h2MaxRequests: 100
+        maxRequestsPerConnection: 10
+        maxRetries: 3
+        idleTimeout: 90s
+        connectTimeout: 10s
+        
+  # Gateway metrics configuration
+  telemetry:
+    v2:
+      enabled: true
+    prometheus:
+      configOverride: {}
+      
+  # Additional environment variables for gateway pods
+  extraEnvVars: []
+  # - name: CUSTOM_VAR
+  #   value: "custom_value"
+  
+  # Additional labels for gateway pods
+  extraLabels: {}
+  
+  # Additional annotations for gateway pods  
+  extraAnnotations: {}
+
   nodeSelector: {}
 
   tolerations: []
@@ -190,3 +237,52 @@ _internal_defaults_do_not_set:
   # Configure the lifecycle hooks for the gateway. See
   # https://kubernetes.io/docs/concepts/containers/container-lifecycle-hooks/.
   lifecycle: {}
+
+# Istio Gateway configuration
+istioGateway:
+  # Enable or disable Istio Gateway creation
+  enabled: true
+  
+  # Name of the Istio Gateway (if not specified, will be auto-generated)
+  name: ""
+  
+  # Selector for the Istio Gateway (if not specified, will use default)
+  selector:
+    istio: ingressgateway
+  
+  # Server configurations for the Istio Gateway
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "*"
+      tls:
+        httpsRedirect: true
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: gateway-tls-secret
+      hosts:
+        - "*"
+
+# Certificate management
+certificates:
+  # Enable automatic certificate management
+  enabled: false
+  
+  # Certificate issuer (for cert-manager integration)
+  issuer:
+    name: "letsencrypt-prod"
+    kind: "ClusterIssuer"
+    
+  # Certificate configuration
+  tls:
+    secretName: "gateway-tls-secret"
+    dnsNames:
+      - "example.com"
+      - "*.example.com"
