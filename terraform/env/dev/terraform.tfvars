@@ -7,6 +7,8 @@ vpc_internal_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
+  default_security_group_name = "bifrost-one-a-default-sg"
+  default_route_table_name    = "bifrost-one-a-default-rt"
   
   tags = {
     Name        = "bifrost-one-a"
@@ -42,6 +44,8 @@ vpc_internet_facing_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
+  default_security_group_name = "bifrost-one-b-default-sg"
+  default_route_table_name    = "bifrost-one-b-default-rt"
   
   tags = {
     Name        = "bifrost-one-b"

@@ -49,3 +49,58 @@ resource "aws_subnet" "subnets" {
     each.value.tags
   )
 }
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_vpc.main.id
+
+  # Remove default rules (optional - uncomment if you want to remove all rules)
+  # ingress = []
+  # egress  = []
+
+  tags = merge(
+    {
+      Name = var.vpc_config.default_security_group_name != null ? var.vpc_config.default_security_group_name : "${var.env}-vpc-default-sg"
+    },
+    var.vpc_config.tags
+  )
+}
+
+resource "aws_default_route_table" "default" {
+  default_route_table_id = aws_vpc.main.default_route_table_id
+
+  tags = merge(
+    {
+      Name = var.vpc_config.default_route_table_name != null ? var.vpc_config.default_route_table_name : "${var.env}-vpc-default-rt"
+    },
+    var.vpc_config.tags
+  )
+}
+
+# Internet Gateway (optional - uncomment if needed)
+# resource "aws_internet_gateway" "main" {
+#   vpc_id = aws_vpc.main.id
+#
+#   tags = merge(
+#     {
+#       Name = "${var.env}-vpc-igw"
+#     },
+#     var.vpc_config.tags
+#   )
+# }
+
+# Public Route Table (optional - uncomment if needed)
+# resource "aws_route_table" "public" {
+#   vpc_id = aws_vpc.main.id
+#
+#   route {
+#     cidr_block = "0.0.0.0/0"
+#     gateway_id = aws_internet_gateway.main.id
+#   }
+#
+#   tags = merge(
+#     {
+#       Name = "${var.env}-vpc-public-rt"
+#     },
+#     var.vpc_config.tags
+#   )
+# }

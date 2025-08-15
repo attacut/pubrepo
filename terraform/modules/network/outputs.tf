@@ -93,3 +93,25 @@ output "private_subnet_ids" {
   description = "List of private subnet IDs (subnets with map_public_ip_on_launch = false)"
   value       = [for k, v in aws_subnet.subnets : v.id if !var.subnets_config[k].map_public_ip_on_launch]
 }
+
+# Default Security Group Outputs
+output "default_security_group_id" {
+  description = "The ID of the default security group"
+  value       = aws_default_security_group.default.id
+}
+
+output "default_security_group_arn" {
+  description = "The ARN of the default security group"
+  value       = aws_default_security_group.default.arn
+}
+
+# Default Route Table Outputs
+output "default_route_table_id" {
+  description = "The ID of the default route table"
+  value       = aws_default_route_table.default.id
+}
+
+output "default_route_table_arn" {
+  description = "The ARN of the default route table"
+  value       = aws_default_route_table.default.arn
+}

@@ -12,6 +12,8 @@ variable "vpc_config" {
     ipv6_ipam_pool_id                   = optional(string, null)
     ipv6_netmask_length                 = optional(number, null)
     ipv6_cidr_block_network_border_group = optional(string, null)
+    default_security_group_name          = optional(string, null)
+    default_route_table_name             = optional(string, null)
     tags                                = optional(map(string), {})
   })
   description = "VPC configuration object with all available options"
