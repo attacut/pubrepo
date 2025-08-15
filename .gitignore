@@ -7,8 +7,8 @@
 **/*.tfstate.backup
 
 # Sensitive variable files
-#**/*.tfvars
-#**/*.tfvars.json
+**/*.tfvars
+**/*.tfvars.json
 
 # Crash logs
 crash.log
