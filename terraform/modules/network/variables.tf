@@ -17,6 +17,27 @@ variable "vpc_config" {
   description = "VPC configuration object with all available options"
 }
 
+variable "subnets_config" {
+  type = map(object({
+    cidr_block                          = string
+    availability_zone                   = string
+    map_public_ip_on_launch            = optional(bool, false)
+    assign_ipv6_address_on_creation    = optional(bool, false)
+    ipv6_cidr_block                    = optional(string, null)
+    ipv6_native                        = optional(bool, false)
+    outpost_arn                        = optional(string, null)
+    customer_owned_ipv4_pool           = optional(string, null)
+    map_customer_owned_ip_on_launch    = optional(bool, false)
+    enable_dns64                       = optional(bool, false)
+    enable_resource_name_dns_a_record_on_launch    = optional(bool, false)
+    enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
+    private_dns_hostname_type_on_launch = optional(string, "ip-name")
+    tags                               = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of subnet configurations where key is subnet name"
+}
+
 variable "env" {
   type        = string
   description = "Environment name"

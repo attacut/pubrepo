@@ -19,3 +19,33 @@ resource "aws_vpc" "main" {
     var.vpc_config.tags
   )
 }
+
+# Subnets
+resource "aws_subnet" "subnets" {
+  for_each = var.subnets_config
+  
+  vpc_id                                         = aws_vpc.main.id
+  cidr_block                                    = each.value.cidr_block
+  availability_zone                             = each.value.availability_zone
+  map_public_ip_on_launch                       = each.value.map_public_ip_on_launch
+  assign_ipv6_address_on_creation               = each.value.assign_ipv6_address_on_creation
+  ipv6_cidr_block                              = each.value.ipv6_cidr_block
+  ipv6_native                                  = each.value.ipv6_native
+  
+  # Outpost-related arguments - only set if outpost_arn is provided
+  outpost_arn                                  = each.value.outpost_arn
+  customer_owned_ipv4_pool                     = each.value.outpost_arn != null ? each.value.customer_owned_ipv4_pool : null
+  map_customer_owned_ip_on_launch              = each.value.outpost_arn != null ? each.value.map_customer_owned_ip_on_launch : null
+  
+  enable_dns64                                 = each.value.enable_dns64
+  enable_resource_name_dns_a_record_on_launch    = each.value.enable_resource_name_dns_a_record_on_launch
+  enable_resource_name_dns_aaaa_record_on_launch = each.value.enable_resource_name_dns_aaaa_record_on_launch
+  private_dns_hostname_type_on_launch          = each.value.private_dns_hostname_type_on_launch
+  
+  tags = merge(
+    {
+      Name = "${var.env}-${each.key}"
+    },
+    each.value.tags
+  )
+}

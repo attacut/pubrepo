@@ -1,7 +1,5 @@
-# Environment
 env = "dev"
 
-# Internal VPC Configuration
 vpc_internal_config = {
   cidr_block           = "10.0.0.0/16"
   instance_tenancy     = "default"
@@ -11,14 +9,32 @@ vpc_internal_config = {
   assign_generated_ipv6_cidr_block     = false
   
   tags = {
-    Name        = "internal-vpc"
+    Name        = "bifrost-one-a"
     Environment = "dev"
     Type        = "internal"
-    Project     = ""
+    Project     = "midgard"
   }
 }
 
-# Internet-facing VPC Configuration
+subnets_internal_config = {
+  "private-subnet-a" = {
+    cidr_block              = "10.0.1.0/24"
+    availability_zone       = "ap-southeast-1a"
+    map_public_ip_on_launch = false
+    tags = {
+      Type = "private"
+    }
+  }
+  "private-subnet-b" = {
+    cidr_block              = "10.0.2.0/24"
+    availability_zone       = "ap-southeast-1b"
+    map_public_ip_on_launch = false
+    tags = {
+      Type = "private"
+    }
+  }
+}
+
 vpc_internet_facing_config = {
   cidr_block           = "10.1.0.0/16"
   instance_tenancy     = "default"
@@ -28,9 +44,28 @@ vpc_internet_facing_config = {
   assign_generated_ipv6_cidr_block     = false
   
   tags = {
-    Name        = "internet-facing-vpc"
+    Name        = "bifrost-one-b"
     Environment = "dev"
     Type        = "internet-facing"
-    Project     = "djvo"
+    Project     = "midgard"
+  }
+}
+
+subnets_internet_facing_config = {
+  "public-subnet-a" = {
+    cidr_block              = "10.1.1.0/24"
+    availability_zone       = "ap-southeast-1a"
+    map_public_ip_on_launch = true
+    tags = {
+      Type = "public"
+    }
+  }
+  "public-subnet-b" = {
+    cidr_block              = "10.1.2.0/24"
+    availability_zone       = "ap-southeast-1b"
+    map_public_ip_on_launch = true
+    tags = {
+      Type = "public"
+    }
   }
 }

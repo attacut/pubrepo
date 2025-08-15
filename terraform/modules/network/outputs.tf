@@ -62,3 +62,34 @@ output "vpc_owner_id" {
   description = "The ID of the AWS account that owns the VPC"
   value       = aws_vpc.main.owner_id
 }
+
+# Subnet Outputs
+output "subnet_ids" {
+  description = "Map of subnet names to their IDs"
+  value       = { for k, v in aws_subnet.subnets : k => v.id }
+}
+
+output "subnet_arns" {
+  description = "Map of subnet names to their ARNs"
+  value       = { for k, v in aws_subnet.subnets : k => v.arn }
+}
+
+output "subnet_cidr_blocks" {
+  description = "Map of subnet names to their CIDR blocks"
+  value       = { for k, v in aws_subnet.subnets : k => v.cidr_block }
+}
+
+output "subnet_availability_zones" {
+  description = "Map of subnet names to their availability zones"
+  value       = { for k, v in aws_subnet.subnets : k => v.availability_zone }
+}
+
+output "public_subnet_ids" {
+  description = "List of public subnet IDs (subnets with map_public_ip_on_launch = true)"
+  value       = [for k, v in aws_subnet.subnets : v.id if var.subnets_config[k].map_public_ip_on_launch]
+}
+
+output "private_subnet_ids" {
+  description = "List of private subnet IDs (subnets with map_public_ip_on_launch = false)"
+  value       = [for k, v in aws_subnet.subnets : v.id if !var.subnets_config[k].map_public_ip_on_launch]
+}
