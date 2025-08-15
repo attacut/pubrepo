@@ -1,0 +1,49 @@
+# VPC Configuration Example
+vpc_config = {
+  # Required: The IPv4 CIDR block for the VPC
+  cidr_block = "10.0.0.0/16"
+  
+  # Optional: A tenancy option for instances launched into the VPC
+  # Values: default, dedicated, host
+  instance_tenancy = "default"
+  
+  # Optional: Enable/disable DNS support in the VPC
+  enable_dns_support = true
+  
+  # Optional: Enable/disable DNS hostnames in the VPC
+  enable_dns_hostnames = true
+  
+  # Optional: Enable/disable network address usage metrics
+  enable_network_address_usage_metrics = false
+  
+  # Optional: Requests an Amazon-provided IPv6 CIDR block
+  assign_generated_ipv6_cidr_block = false
+  
+  # Optional: The ID of an IPv4 IPAM pool to use for allocating this VPC's CIDR
+  ipv4_ipam_pool_id = null
+  
+  # Optional: The netmask length of the IPv4 CIDR to allocate to this VPC
+  ipv4_netmask_length = null
+  
+  # Optional: IPv6 CIDR block to request from an IPAM Pool
+  ipv6_cidr_block = null
+  
+  # Optional: IPAM Pool ID for IPv6 allocation
+  ipv6_ipam_pool_id = null
+  
+  # Optional: Netmask length to request from IPAM Pool
+  ipv6_netmask_length = null
+  
+  # Optional: The allowed tenancy of instances launched into the VPC
+  ipv6_cidr_block_network_border_group = null
+  
+  # Optional: A map of tags to assign to the resource
+  tags = {
+    Environment = "dev"
+    Project     = "djvo"
+    Owner       = "team-infrastructure"
+  }
+}
+
+# Environment name
+env = "dev"
