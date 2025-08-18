@@ -12,6 +12,10 @@ variable "vpc_internal_config" {
     ipv6_ipam_pool_id                   = optional(string, null)
     ipv6_netmask_length                 = optional(number, null)
     ipv6_cidr_block_network_border_group = optional(string, null)
+    default_security_group_name          = optional(string, null)
+    default_route_table_name             = optional(string, null)
+    enable_internet_gateway              = optional(bool, false)
+    internet_gateway_name                = optional(string, null)
     tags                                = optional(map(string), {})
   })
   description = "VPC configuration for internal network"
@@ -32,6 +36,7 @@ variable "subnets_internal_config" {
     enable_resource_name_dns_a_record_on_launch    = optional(bool, false)
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
+    route_table_association             = optional(string, null)
     tags                               = optional(map(string), {})
   }))
   default     = {}
@@ -52,6 +57,10 @@ variable "vpc_internet_facing_config" {
     ipv6_ipam_pool_id                   = optional(string, null)
     ipv6_netmask_length                 = optional(number, null)
     ipv6_cidr_block_network_border_group = optional(string, null)
+    default_security_group_name          = optional(string, null)
+    default_route_table_name             = optional(string, null)
+    enable_internet_gateway              = optional(bool, false)
+    internet_gateway_name                = optional(string, null)
     tags                                = optional(map(string), {})
   })
   description = "VPC configuration for internet-facing network"
@@ -72,10 +81,61 @@ variable "subnets_internet_facing_config" {
     enable_resource_name_dns_a_record_on_launch    = optional(bool, false)
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
+    route_table_association             = optional(string, null)
     tags                               = optional(map(string), {})
   }))
   default     = {}
   description = "Map of subnet configurations for internet-facing VPC"
+}
+
+variable "route_tables_internal_config" {
+  type = map(object({
+    name = optional(string, null)
+    routes = optional(list(object({
+      cidr_block                = optional(string, null)
+      ipv6_cidr_block          = optional(string, null)
+      destination_prefix_list_id = optional(string, null)
+      carrier_gateway_id       = optional(string, null)
+      core_network_arn         = optional(string, null)
+      egress_only_gateway_id   = optional(string, null)
+      gateway_id               = optional(string, null)
+      instance_id              = optional(string, null)
+      local_gateway_id         = optional(string, null)
+      nat_gateway_id           = optional(string, null)
+      network_interface_id     = optional(string, null)
+      transit_gateway_id       = optional(string, null)
+      vpc_endpoint_id          = optional(string, null)
+      vpc_peering_connection_id = optional(string, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of route table configurations for internal VPC"
+}
+
+variable "route_tables_internet_facing_config" {
+  type = map(object({
+    name = optional(string, null)
+    routes = optional(list(object({
+      cidr_block                = optional(string, null)
+      ipv6_cidr_block          = optional(string, null)
+      destination_prefix_list_id = optional(string, null)
+      carrier_gateway_id       = optional(string, null)
+      core_network_arn         = optional(string, null)
+      egress_only_gateway_id   = optional(string, null)
+      gateway_id               = optional(string, null)
+      instance_id              = optional(string, null)
+      local_gateway_id         = optional(string, null)
+      nat_gateway_id           = optional(string, null)
+      network_interface_id     = optional(string, null)
+      transit_gateway_id       = optional(string, null)
+      vpc_endpoint_id          = optional(string, null)
+      vpc_peering_connection_id = optional(string, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of route table configurations for internet-facing VPC"
 }
 
 variable "env" {

@@ -14,6 +14,8 @@ variable "vpc_config" {
     ipv6_cidr_block_network_border_group = optional(string, null)
     default_security_group_name          = optional(string, null)
     default_route_table_name             = optional(string, null)
+    enable_internet_gateway              = optional(bool, false)
+    internet_gateway_name                = optional(string, null)
     tags                                = optional(map(string), {})
   })
   description = "VPC configuration object with all available options"
@@ -34,10 +36,36 @@ variable "subnets_config" {
     enable_resource_name_dns_a_record_on_launch    = optional(bool, false)
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
+    route_table_association             = optional(string, null)  # Route table to associate with subnet
     tags                               = optional(map(string), {})
   }))
   default     = {}
   description = "Map of subnet configurations where key is subnet name"
+}
+
+variable "route_tables_config" {
+  type = map(object({
+    name = optional(string, null)
+    routes = optional(list(object({
+      cidr_block                = optional(string, null)
+      ipv6_cidr_block          = optional(string, null)
+      destination_prefix_list_id = optional(string, null)
+      carrier_gateway_id       = optional(string, null)
+      core_network_arn         = optional(string, null)
+      egress_only_gateway_id   = optional(string, null)
+      gateway_id               = optional(string, null)  # Will be set to IGW ID if "internet_gateway"
+      instance_id              = optional(string, null)
+      local_gateway_id         = optional(string, null)
+      nat_gateway_id           = optional(string, null)
+      network_interface_id     = optional(string, null)
+      transit_gateway_id       = optional(string, null)
+      vpc_endpoint_id          = optional(string, null)
+      vpc_peering_connection_id = optional(string, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of route table configurations where key is route table name"
 }
 
 variable "env" {

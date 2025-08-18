@@ -115,3 +115,25 @@ output "default_route_table_arn" {
   description = "The ARN of the default route table"
   value       = aws_default_route_table.default.arn
 }
+
+# Internet Gateway Outputs
+output "internet_gateway_id" {
+  description = "The ID of the Internet Gateway"
+  value       = var.vpc_config.enable_internet_gateway ? aws_internet_gateway.main[0].id : null
+}
+
+output "internet_gateway_arn" {
+  description = "The ARN of the Internet Gateway"
+  value       = var.vpc_config.enable_internet_gateway ? aws_internet_gateway.main[0].arn : null
+}
+
+# Custom Route Tables Outputs
+output "route_table_ids" {
+  description = "Map of route table names to their IDs"
+  value       = { for k, v in aws_route_table.custom : k => v.id }
+}
+
+output "route_table_arns" {
+  description = "Map of route table names to their ARNs"
+  value       = { for k, v in aws_route_table.custom : k => v.arn }
+}

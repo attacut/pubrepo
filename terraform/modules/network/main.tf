@@ -20,7 +20,6 @@ resource "aws_vpc" "main" {
   )
 }
 
-# Subnets
 resource "aws_subnet" "subnets" {
   for_each = var.subnets_config
   
@@ -77,30 +76,83 @@ resource "aws_default_route_table" "default" {
 }
 
 # Internet Gateway (optional - uncomment if needed)
-# resource "aws_internet_gateway" "main" {
-#   vpc_id = aws_vpc.main.id
-#
-#   tags = merge(
-#     {
-#       Name = "${var.env}-vpc-igw"
-#     },
-#     var.vpc_config.tags
-#   )
-# }
+resource "aws_internet_gateway" "main" {
+  count  = var.vpc_config.enable_internet_gateway ? 1 : 0
+  vpc_id = aws_vpc.main.id
 
-# Public Route Table (optional - uncomment if needed)
-# resource "aws_route_table" "public" {
-#   vpc_id = aws_vpc.main.id
-#
-#   route {
-#     cidr_block = "0.0.0.0/0"
-#     gateway_id = aws_internet_gateway.main.id
-#   }
-#
-#   tags = merge(
-#     {
-#       Name = "${var.env}-vpc-public-rt"
-#     },
-#     var.vpc_config.tags
-#   )
-# }
+  tags = merge(
+    {
+      Name = var.vpc_config.internet_gateway_name != null ? var.vpc_config.internet_gateway_name : "${var.env}-vpc-igw"
+    },
+    var.vpc_config.tags
+  )
+}
+
+# Route Tables
+resource "aws_route_table" "custom" {
+  for_each = var.route_tables_config
+  vpc_id   = aws_vpc.main.id
+
+  tags = merge(
+    {
+      Name = each.value.name != null ? each.value.name : "${var.env}-${each.key}-rt"
+    },
+    each.value.tags,
+    var.vpc_config.tags
+  )
+}
+
+# Routes
+locals {
+  # Create a flat list of routes with proper target assignments
+  routes_flat = flatten([
+    for rt_key, rt_config in var.route_tables_config : [
+      for route_idx, route in rt_config.routes : {
+        key             = "${rt_key}-${route_idx}"
+        route_table_key = rt_key
+        route           = merge(route, {
+          # Handle special "internet_gateway" value
+          resolved_gateway_id = route.gateway_id == "internet_gateway" && var.vpc_config.enable_internet_gateway ? aws_internet_gateway.main[0].id : (
+            route.gateway_id != null && route.gateway_id != "internet_gateway" ? route.gateway_id : null
+          )
+        })
+      }
+    ]
+  ])
+}
+
+resource "aws_route" "custom" {
+  for_each = {
+    for route in local.routes_flat : route.key => route
+  }
+
+  route_table_id = aws_route_table.custom[each.value.route_table_key].id
+
+  # Destination (only one should be specified)
+  destination_cidr_block      = each.value.route.cidr_block
+  destination_ipv6_cidr_block = each.value.route.ipv6_cidr_block
+  destination_prefix_list_id  = each.value.route.destination_prefix_list_id
+
+  # Targets - use lifecycle to ignore null values
+  gateway_id                = each.value.route.resolved_gateway_id
+  carrier_gateway_id        = each.value.route.carrier_gateway_id
+  core_network_arn         = each.value.route.core_network_arn
+  egress_only_gateway_id   = each.value.route.egress_only_gateway_id
+  local_gateway_id         = each.value.route.local_gateway_id
+  nat_gateway_id           = each.value.route.nat_gateway_id
+  network_interface_id     = each.value.route.network_interface_id
+  transit_gateway_id       = each.value.route.transit_gateway_id
+  vpc_endpoint_id          = each.value.route.vpc_endpoint_id
+  vpc_peering_connection_id = each.value.route.vpc_peering_connection_id
+}
+
+# Route Table Associations
+resource "aws_route_table_association" "custom" {
+  for_each = {
+    for subnet_key, subnet in var.subnets_config :
+    subnet_key => subnet if subnet.route_table_association != null
+  }
+
+  subnet_id      = aws_subnet.subnets[each.key].id
+  route_table_id = aws_route_table.custom[each.value.route_table_association].id
+}
