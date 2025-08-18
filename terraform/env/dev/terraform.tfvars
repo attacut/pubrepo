@@ -7,19 +7,19 @@ vpc_internal_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
-  default_security_group_name = "bifrost-one-a-default-sg"
-  default_route_table_name    = "bifrost-one-a-default-rt"
+  default_security_group_name = "bifrost-one-default-sg"
+  default_route_table_name    = "bifrost-one-default-rt"
   
   tags = {
-    Name        = "bifrost-one-a"
+    Name        = "bifrost-one"
     Environment = "dev"
     Type        = "internal"
-    Project     = "midgard"
+    Project     = "assgard"
   }
 }
 
 subnets_internal_config = {
-  "private-subnet-a" = {
+  "bifrost-one-subnet-a" = {
     cidr_block              = "10.0.1.0/24"
     availability_zone       = "ap-southeast-1a"
     map_public_ip_on_launch = false
@@ -27,7 +27,7 @@ subnets_internal_config = {
       Type = "private"
     }
   }
-  "private-subnet-b" = {
+  "bifrost-one-subnet-b" = {
     cidr_block              = "10.0.2.0/24"
     availability_zone       = "ap-southeast-1b"
     map_public_ip_on_launch = false
@@ -44,21 +44,21 @@ vpc_internet_facing_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
-  default_security_group_name = "bifrost-one-b-default-sg"
-  default_route_table_name    = "bifrost-one-b-default-rt"
+  default_security_group_name = "bifrost-two-default-sg"
+  default_route_table_name    = "bifrost-two-default-rt"
   enable_internet_gateway     = true
-  internet_gateway_name       = "bifrost-one-b-igw"
+  internet_gateway_name       = "bifrost-two-igw"
   
   tags = {
-    Name        = "bifrost-one-b"
+    Name        = "bifrost-two"
     Environment = "dev"
     Type        = "internet-facing"
-    Project     = "midgard"
+    Project     = "assgard"
   }
 }
 
 subnets_internet_facing_config = {
-  "public-subnet-a" = {
+  "bifrost-two-subnet-a" = {
     cidr_block              = "10.1.1.0/24"
     availability_zone       = "ap-southeast-1a"
     map_public_ip_on_launch = true
@@ -67,7 +67,7 @@ subnets_internet_facing_config = {
       Type = "public"
     }
   }
-  "public-subnet-b" = {
+  "bifrost-two-subnet-b" = {
     cidr_block              = "10.1.2.0/24"
     availability_zone       = "ap-southeast-1b"
     map_public_ip_on_launch = true
@@ -80,7 +80,7 @@ subnets_internet_facing_config = {
 
 route_tables_internet_facing_config = {
   "public" = {
-    name = "bifrost-one-b-public-rt"
+    name = "bifrost-two-default-rt"
     routes = [
       {
         cidr_block = "0.0.0.0/0"
@@ -95,7 +95,7 @@ route_tables_internet_facing_config = {
 
 route_tables_internal_config = {
   "private" = {
-    name = "bifrost-one-a-private-rt"
+    name = "bifrost-one-default-rt"
     routes = [] 
     tags = {
       Type = "private"

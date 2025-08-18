@@ -94,11 +94,11 @@ resource "aws_route_table" "custom" {
   vpc_id   = aws_vpc.main.id
 
   tags = merge(
+    var.vpc_config.tags,
+    each.value.tags,
     {
       Name = each.value.name != null ? each.value.name : "${var.env}-${each.key}-rt"
-    },
-    each.value.tags,
-    var.vpc_config.tags
+    }
   )
 }
 
