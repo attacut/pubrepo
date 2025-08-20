@@ -43,7 +43,7 @@ resource "aws_subnet" "subnets" {
   
   tags = merge(
     {
-      Name = "${var.env}-${each.key}"
+      Name = each.key
     },
     each.value.tags
   )
@@ -97,7 +97,7 @@ resource "aws_route_table" "custom" {
     var.vpc_config.tags,
     each.value.tags,
     {
-      Name = each.value.name != null ? each.value.name : "${var.env}-${each.key}-rt"
+      Name = each.value.name != null ? each.value.name : "${each.key}-rt"
     }
   )
 }
