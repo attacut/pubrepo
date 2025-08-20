@@ -37,6 +37,7 @@ variable "subnets_internal_config" {
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
     route_table_association             = optional(string, null)
+    network_acl_association             = optional(string, null)  # Network ACL to associate with subnet
     tags                               = optional(map(string), {})
   }))
   default     = {}
@@ -82,6 +83,7 @@ variable "subnets_internet_facing_config" {
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
     route_table_association             = optional(string, null)
+    network_acl_association             = optional(string, null)  # Network ACL to associate with subnet
     tags                               = optional(map(string), {})
   }))
   default     = {}

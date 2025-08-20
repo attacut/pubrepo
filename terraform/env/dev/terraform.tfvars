@@ -24,6 +24,7 @@ subnets_internal_config = {
     cidr_block              = "10.0.1.0/24"
     availability_zone       = "ap-southeast-1a"
     map_public_ip_on_launch = false
+    network_acl_association = "private"
     tags = {
       Type = "private"
     }
@@ -32,6 +33,7 @@ subnets_internal_config = {
     cidr_block              = "10.0.2.0/24"
     availability_zone       = "ap-southeast-1b"
     map_public_ip_on_launch = false
+    network_acl_association = "private"
     tags = {
       Type = "private"
     }
@@ -65,6 +67,7 @@ subnets_internet_facing_config = {
     availability_zone       = "ap-southeast-1a"
     map_public_ip_on_launch = true
     route_table_association = "public"
+    network_acl_association = "public"
     tags = {
       Type = "public"
     }
@@ -74,6 +77,7 @@ subnets_internet_facing_config = {
     availability_zone       = "ap-southeast-1b"
     map_public_ip_on_launch = true
     route_table_association = "public"
+    network_acl_association = "public"
     tags = {
       Type = "public"
     }
