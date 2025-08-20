@@ -14,6 +14,7 @@ variable "vpc_config" {
     ipv6_cidr_block_network_border_group = optional(string, null)
     default_security_group_name          = optional(string, null)
     default_route_table_name             = optional(string, null)
+    default_network_acl_name             = optional(string, null)
     enable_internet_gateway              = optional(bool, false)
     internet_gateway_name                = optional(string, null)
     tags                                = optional(map(string), {})
@@ -37,6 +38,7 @@ variable "subnets_config" {
     enable_resource_name_dns_aaaa_record_on_launch = optional(bool, false)
     private_dns_hostname_type_on_launch = optional(string, "ip-name")
     route_table_association             = optional(string, null)  # Route table to associate with subnet
+    network_acl_association             = optional(string, null)  # Network ACL to associate with subnet
     tags                               = optional(map(string), {})
   }))
   default     = {}
@@ -66,6 +68,23 @@ variable "route_tables_config" {
   }))
   default     = {}
   description = "Map of route table configurations where key is route table name"
+}
+
+variable "network_acls_config" {
+  type = map(object({
+    name = optional(string, null)
+    rules = optional(list(object({
+      rule_number = number
+      protocol    = string
+      action      = string
+      cidr_block  = string
+      from_port   = optional(number, null)
+      to_port     = optional(number, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of network ACL configurations where key is ACL name"
 }
 
 variable "env" {

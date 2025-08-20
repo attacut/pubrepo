@@ -138,6 +138,40 @@ variable "route_tables_internet_facing_config" {
   description = "Map of route table configurations for internet-facing VPC"
 }
 
+variable "network_acls_internal_config" {
+  type = map(object({
+    name = optional(string, null)
+    rules = optional(list(object({
+      rule_number = number
+      protocol    = string
+      action      = string
+      cidr_block  = string
+      from_port   = optional(number, null)
+      to_port     = optional(number, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of network ACL configurations for internal VPC"
+}
+
+variable "network_acls_internet_facing_config" {
+  type = map(object({
+    name = optional(string, null)
+    rules = optional(list(object({
+      rule_number = number
+      protocol    = string
+      action      = string
+      cidr_block  = string
+      from_port   = optional(number, null)
+      to_port     = optional(number, null)
+    })), [])
+    tags = optional(map(string), {})
+  }))
+  default     = {}
+  description = "Map of network ACL configurations for internet-facing VPC"
+}
+
 variable "env" {
   type        = string
   default     = "dev"

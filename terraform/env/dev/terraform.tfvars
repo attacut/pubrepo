@@ -7,8 +7,9 @@ vpc_internal_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
-  default_security_group_name = "bifrost-one-default-sg"
-  default_route_table_name    = "bifrost-one-default-rt"
+  default_security_group_name = "bifrost-one"
+  default_route_table_name    = "bifrost-one"
+  default_network_acl_name    = "bifrost-one"
   
   tags = {
     Name        = "bifrost-one"
@@ -44,10 +45,11 @@ vpc_internet_facing_config = {
   enable_dns_hostnames = true
   enable_network_address_usage_metrics = false
   assign_generated_ipv6_cidr_block     = false
-  default_security_group_name = "bifrost-two-default-sg"
-  default_route_table_name    = "bifrost-two-default-rt"
+  default_security_group_name = "bifrost-two"
+  default_route_table_name    = "bifrost-two"
+  default_network_acl_name    = "bifrost-two"
   enable_internet_gateway     = true
-  internet_gateway_name       = "bifrost-two-igw"
+  internet_gateway_name       = "bifrost-two"
   
   tags = {
     Name        = "bifrost-two"
@@ -80,7 +82,7 @@ subnets_internet_facing_config = {
 
 route_tables_internet_facing_config = {
   "public" = {
-    name = "bifrost-two-default-rt"
+    name = "bifrost-two-public-rt"
     routes = [
       {
         cidr_block = "0.0.0.0/0"
@@ -95,8 +97,42 @@ route_tables_internet_facing_config = {
 
 route_tables_internal_config = {
   "private" = {
-    name = "bifrost-one-default-rt"
+    name = "bifrost-one-private-rt"
     routes = [] 
+    tags = {
+      Type = "private"
+    }
+  }
+}
+
+network_acls_internet_facing_config = {
+  "public" = {
+    name = "bifrost-two-public-nacl"
+    rules = [
+      {
+        rule_number = 100
+        protocol    = "-1"
+        action      = "allow"
+        cidr_block  = "0.0.0.0/0"
+      }
+    ]
+    tags = {
+      Type = "public"
+    }
+  }
+}
+
+network_acls_internal_config = {
+  "private" = {
+    name = "bifrost-one-private-nacl"
+    rules = [
+      {
+        rule_number = 100
+        protocol    = "-1"
+        action      = "allow"
+        cidr_block  = "10.0.0.0/8"
+      }
+    ]
     tags = {
       Type = "private"
     }

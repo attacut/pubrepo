@@ -156,3 +156,85 @@ resource "aws_route_table_association" "custom" {
   subnet_id      = aws_subnet.subnets[each.key].id
   route_table_id = aws_route_table.custom[each.value.route_table_association].id
 }
+
+# Default Network ACL
+resource "aws_default_network_acl" "default" {
+  default_network_acl_id = aws_vpc.main.default_network_acl_id
+
+  ingress {
+    from_port  = 0
+    to_port    = 0
+    rule_no    = 100
+    action     = "allow"
+    protocol   = "-1"
+    cidr_block = "0.0.0.0/0"
+  }
+
+  egress {
+    from_port  = 0
+    to_port    = 0
+    rule_no    = 100
+    action     = "allow"
+    protocol   = "-1"
+    cidr_block = "0.0.0.0/0"
+  }
+
+  tags = merge(
+    {
+      Name = var.vpc_config.default_network_acl_name != null ? var.vpc_config.default_network_acl_name : "${var.env}-vpc-default-nacl"
+    },
+    var.vpc_config.tags
+  )
+}
+
+# Custom Network ACLs
+resource "aws_network_acl" "custom" {
+  for_each = var.network_acls_config
+  vpc_id   = aws_vpc.main.id
+
+  tags = merge(
+    var.vpc_config.tags,
+    each.value.tags,
+    {
+      Name = each.value.name != null ? each.value.name : "${each.key}-nacl"
+    }
+  )
+}
+
+# Network ACL Rules
+locals {
+  nacl_rules_flat = flatten([
+    for nacl_key, nacl_config in var.network_acls_config : [
+      for rule_idx, rule in nacl_config.rules : {
+        key         = "${nacl_key}-${rule_idx}"
+        nacl_key    = nacl_key
+        rule        = rule
+      }
+    ]
+  ])
+}
+
+resource "aws_network_acl_rule" "custom" {
+  for_each = {
+    for rule in local.nacl_rules_flat : rule.key => rule
+  }
+
+  network_acl_id = aws_network_acl.custom[each.value.nacl_key].id
+  rule_number    = each.value.rule.rule_number
+  protocol       = each.value.rule.protocol
+  rule_action    = each.value.rule.action
+  cidr_block     = each.value.rule.cidr_block
+  from_port      = each.value.rule.from_port
+  to_port        = each.value.rule.to_port
+}
+
+# Network ACL Associations
+resource "aws_network_acl_association" "custom" {
+  for_each = {
+    for subnet_key, subnet in var.subnets_config :
+    subnet_key => subnet if subnet.network_acl_association != null
+  }
+
+  network_acl_id = aws_network_acl.custom[each.value.network_acl_association].id
+  subnet_id      = aws_subnet.subnets[each.key].id
+}
