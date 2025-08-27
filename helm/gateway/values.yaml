@@ -253,7 +253,7 @@ istioGateway:
     istio: ingressgateway
   
   # Server configurations for the Istio Gateway
-servers:
+  servers:
     # HTTP server (optional - for redirect)
     - port:
         number: 80
