@@ -248,7 +248,7 @@ istioGateway:
   
   # Selector for the Istio Gateway (if not specified, will use default)
   selector:
-    istio: ingressgateway
+    istio: istio-ingressgateway
   
   # Server configurations for the Istio Gateway
   servers:
