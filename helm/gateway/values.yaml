@@ -253,12 +253,24 @@ istioGateway:
     istio: ingressgateway
   
   # Server configurations for the Istio Gateway
-  servers:
+servers:
+    # HTTP server (optional - for redirect)
     - port:
         number: 80
         name: http
         protocol: HTTP
       hosts:
-        - "*"
+        - "*.assguard.local"
       tls:
-        httpsRedirect: false
+        httpsRedirect: true  # เปลี่ยนเป็น true เพื่อ redirect ไป HTTPS
+    
+    # HTTPS server สำหรับ *.assguard.local
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      hosts:
+        - "*.assguard.local"
+      tls:
+        mode: SIMPLE
+        credentialName: assguard-local-tls 
