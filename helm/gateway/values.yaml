@@ -259,7 +259,7 @@ istioGateway:
       hosts:
         - "*"
       tls:
-        httpsRedirect: true
+        httpsRedirect: false
     - port:
         number: 443
         name: https
