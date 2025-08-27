@@ -260,29 +260,3 @@ istioGateway:
         - "*"
       tls:
         httpsRedirect: false
-    - port:
-        number: 443
-        name: https
-        protocol: HTTPS
-      tls:
-        mode: SIMPLE
-        credentialName: gateway-tls-secret
-      hosts:
-        - "*"
-
-# Certificate management
-certificates:
-  # Enable automatic certificate management
-  enabled: false
-  
-  # Certificate issuer (for cert-manager integration)
-  issuer:
-    name: "letsencrypt-prod"
-    kind: "ClusterIssuer"
-    
-  # Certificate configuration
-  tls:
-    secretName: "gateway-tls-secret"
-    dnsNames:
-      - "example.com"
-      - "*.example.com"
