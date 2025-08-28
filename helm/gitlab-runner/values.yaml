@@ -474,7 +474,7 @@ runners:
       run_untagged = true
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
-        image = "alpine:latest"
+        image = "docker.io/library/alpine:latest"
         privileged = false
         poll_timeout = 1800
         cpu_limit = "200m"
