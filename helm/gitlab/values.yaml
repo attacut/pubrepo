@@ -721,7 +721,7 @@ global:
       # events: {}
 
     # Settings utilized by other services referencing registry:
-    enabled: true
+    enabled: false  # Disable registry to avoid image pull issues
     host:
     # port: 443
     api:

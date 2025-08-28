@@ -1,13 +1,13 @@
 ## Set default image, imageTag, and imagePullPolicy.
 ## Distributed Minio ref: https://docs.minio.io/docs/distributed-minio-quickstart-guide
 ##
-image: "minio/minio"
+image: "docker.io/minio/minio"
 imageTag: "RELEASE.2017-12-28T01-21-00Z"
 # imagePullPolicy: IfNotPresent
 # pullSecrets: []
 
 minioMc:
-  image: minio/mc
+  image: docker.io/minio/mc
   tag: "RELEASE.2018-07-13T00-53-22Z"
 
 ingress:
