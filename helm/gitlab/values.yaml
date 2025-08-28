@@ -1483,8 +1483,8 @@ gitlab:
     service:
       type: NodePort
       nodePort:
-        http: 30080
-        https: 30443
+        http: 30081
+        https: 30444
   
   ## Enable GitLab Shell with NodePort for SSH access  
   gitlab-shell:
