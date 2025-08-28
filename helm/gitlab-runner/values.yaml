@@ -467,21 +467,11 @@ runners:
   config: |
     [[runners]]
       name = "AssguardK8"
-      url = "{{ .Values.gitlabUrl }}"
-      token = "{{ .Values.runnerToken }}"
       executor = "kubernetes"
-      tag_list = ["kubernetes", "docker", "linux"]
+      tag_list = ["kubernetes", "docker"]
       run_untagged = true
-      locked = false
       [runners.kubernetes]
-        namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
-        image = "ubuntu:20.04"
-        privileged = false
         poll_timeout = 1800
-        cpu_limit = "500m"
-        memory_limit = "500Mi"
-        cpu_request = "100m"
-        memory_request = "128Mi"
  
 
   ## Absolute path for an existing runner configuration file
