@@ -244,7 +244,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
   minio:
-    enabled: true  # Disable MinIO due to architecture issues
+    enabled: false  # Disable MinIO to save memory
     persistence:
       storageClass: "nfs-client"
       size: 20Gi
@@ -637,7 +637,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/gitlab/kas/
   kas:
-    enabled: true
+    enabled: false  # Disable KAS to save memory
     service:
       apiExternalPort: 8153 # port for connections from the GitLab backend
     tls:
@@ -1292,7 +1292,7 @@ redis:
     persistence:
       enabled: true
       storageClass: "nfs-client"
-      size: 8Gi
+      size: 4Gi  # Reduce Redis storage
       accessModes:
         - ReadWriteOnce
   cluster:
@@ -1344,7 +1344,7 @@ postgresql:
     persistence:
       enabled: true
       storageClass: "nfs-client"
-      size: 20Gi
+      size: 8Gi  # Reduce PostgreSQL storage to save space
       accessModes:
         - ReadWriteOnce
     initdb:
@@ -1392,7 +1392,7 @@ postgresql:
 ## https://docs.gitlab.com/charts/installation/secrets
 ## https://docs.gitlab.com/charts/charts/shared-secrets.html
 shared-secrets:
-  enabled: true
+  enabled: false  # Disable to save memory and avoid registry issues
   rbac:
     create: true
   selfsign:
@@ -1475,6 +1475,7 @@ traefik:
 gitlab:
   ## https://docs.gitlab.com/charts/charts/gitlab/toolbox
   toolbox:
+    enabled: false  # Disable toolbox to save memory
     replicas: 1
     antiAffinityLabels:
       matchLabels:
@@ -1506,7 +1507,7 @@ gitlab:
   gitaly:
     persistence:
       storageClass: "nfs-client" 
-      size: 50Gi
+      size: 20Gi  # Reduce Gitaly storage
       accessMode: ReadWriteOnce
   ## https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages
   #   gitlab-pages:
