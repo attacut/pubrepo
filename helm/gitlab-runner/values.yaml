@@ -466,6 +466,8 @@ runners:
   # runner configuration: https://docs.gitlab.com/runner/configuration/advanced-configuration.html
   config: |
     [[runners]]
+      name = "kubernetes-runner"
+      executor = "kubernetes"
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "ubuntu:20.04"
