@@ -1379,8 +1379,8 @@ postgresql:
 ## Installation & configuration charts/registry
 ## https://docs.gitlab.com/charts/architecture/decisions#registry
 ## https://docs.gitlab.com/charts/charts/registry/
-# registry:
-#   enabled: false
+registry:
+  enabled: false  # Disable registry to save resources
 
 ## Automatic shared secret generation
 ## https://docs.gitlab.com/charts/installation/secrets
@@ -1469,7 +1469,7 @@ traefik:
 gitlab:
   ## https://docs.gitlab.com/charts/charts/gitlab/toolbox
   toolbox:
-    enabled: true  # Enable toolbox but keep minimal
+    enabled: false  # Enable toolbox but keep minimal
     replicas: 1
     antiAffinityLabels:
       matchLabels:
@@ -1484,6 +1484,14 @@ gitlab:
   
   ## Enable webservice with NodePort for external access
   webservice:
+    replicaCount: 1  # Scale down to 1 replica to save resources
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
     service:
       type: NodePort
       nodePort:
@@ -1492,6 +1500,7 @@ gitlab:
   
   ## Enable GitLab Shell with NodePort for SSH access  
   gitlab-shell:
+    replicaCount: 1  # Scale down to 1 replica to save resources
     service:
       type: NodePort
       nodePort: 30022
@@ -1502,8 +1511,14 @@ gitlab:
   migrations:
     enabled: false
   ## https://docs.gitlab.com/charts/charts/gitlab/sidekiq
-  #   sidekiq:
-  #     enabled: false
+  sidekiq:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
   ## https://docs.gitlab.com/charts/charts/gitlab/gitaly
   gitaly:
     persistence:
