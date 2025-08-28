@@ -477,13 +477,9 @@ runners:
         poll_timeout = 1800
         cpu_limit = "500m"
         memory_limit = "500Mi"
-        cpu_request = "100m"
-        memory_request = "128Mi"
         helper_image = "registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:arm64-v18.3.0"
         helper_cpu_limit = "200m"
         helper_memory_limit = "200Mi"
-        helper_cpu_request = "100m"
-        helper_memory_request = "128Mi"
  
 
   ## Absolute path for an existing runner configuration file
