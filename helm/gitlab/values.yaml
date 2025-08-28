@@ -244,7 +244,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
   minio:
-    enabled: true
+    enabled: true  # Disable MinIO due to architecture issues
     persistence:
       storageClass: "nfs-client"
       size: 20Gi
