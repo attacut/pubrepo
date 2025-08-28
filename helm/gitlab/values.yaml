@@ -244,7 +244,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
   minio:
-    enabled: true  # Enable MinIO object storage
+    enabled: false  # Disable MinIO to save resources - use local storage instead
     persistence:
       storageClass: "nfs-client"
       size: 20Gi
@@ -1283,10 +1283,17 @@ redis:
     usePasswordFiles: true
   architecture: standalone
   master:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi  # Reduce Redis memory
+      limits:
+        cpu: 100m
+        memory: 256Mi  # Reduce Redis memory limit
     persistence:
       enabled: true
       storageClass: "nfs-client"
-      size: 4Gi  # Reduce Redis storage
+      size: 2Gi  # Further reduce Redis storage
       accessModes:
         - ReadWriteOnce
   cluster:
@@ -1335,10 +1342,17 @@ postgresql:
     image:
       repository: bitnamilegacy/os-shell
   primary:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi  # Reduce PostgreSQL memory
+      limits:
+        cpu: 200m
+        memory: 512Mi  # Reduce PostgreSQL memory limit
     persistence:
       enabled: true
       storageClass: "nfs-client"
-      size: 8Gi  # Reduce PostgreSQL storage to save space
+      size: 4Gi  # Further reduce PostgreSQL storage to save space
       accessModes:
         - ReadWriteOnce
     initdb:
@@ -1521,9 +1535,16 @@ gitlab:
         memory: 512Mi
   ## https://docs.gitlab.com/charts/charts/gitlab/gitaly
   gitaly:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi  # Add resource requests for Gitaly
+      limits:
+        cpu: 200m
+        memory: 512Mi  # Add resource limits for Gitaly
     persistence:
       storageClass: "nfs-client" 
-      size: 20Gi  # Reduce Gitaly storage
+      size: 10Gi  # Further reduce Gitaly storage
       accessMode: ReadWriteOnce
   ## https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages
   #   gitlab-pages:
