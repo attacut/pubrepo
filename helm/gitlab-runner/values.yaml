@@ -467,6 +467,8 @@ runners:
   config: |
     [[runners]]
       name = "gitlab-runner"
+      url = "{{ .Values.gitlabUrl }}"
+      token = "{{ .Values.runnerToken }}"
       executor = "kubernetes"
       tag_list = ["kubernetes", "docker", "arm64"]
       run_untagged = true
@@ -475,11 +477,19 @@ runners:
         image = "alpine:latest"
         privileged = false
         poll_timeout = 1800
-        cpu_limit = "500m"
-        memory_limit = "500Mi"
+        cpu_limit = "200m"
+        memory_limit = "256Mi"
+        cpu_request = "50m"
+        memory_request = "64Mi"
         helper_image = "registry.gitlab.com/gitlab-org/gitlab-runner/gitlab-runner-helper:arm64-v18.3.0"
-        helper_cpu_limit = "200m"
-        helper_memory_limit = "200Mi"
+        helper_cpu_limit = "100m"
+        helper_memory_limit = "128Mi"
+        helper_cpu_request = "50m"
+        helper_memory_request = "64Mi"
+        [[runners.kubernetes.node_tolerations]]
+          key = "node-role.kubernetes.io/control-plane"
+          operator = "Exists"
+          effect = "NoSchedule"
  
 
   ## Absolute path for an existing runner configuration file
@@ -646,7 +656,10 @@ nodeSelector: {}
 ## List of node taints to tolerate (requires Kubernetes >= 1.6)
 ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 ##
-tolerations: []
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    operator: "Exists"
+    effect: "NoSchedule"
   # Example: Regular worker nodes may have a taint, thus you need to tolerate the taint
   # when you assign the gitlab runner manager with nodeSelector or affinity to the nodes.
   # - key: "node-role.kubernetes.io/worker"
