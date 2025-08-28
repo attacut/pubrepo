@@ -27,6 +27,10 @@ global:
   common:
     labels: {}
 
+  ## Default storage class for all persistent volumes
+  ## https://docs.gitlab.com/charts/advanced/external-gitaly/#configure-persistent-volumes
+  storageClass: nfs-client
+
   image: {}
     # Registry value override is only available for the following Charts:
     # - Spamcheck
@@ -629,7 +633,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/gitlab/kas/
   kas:
-    enabled: true
+    enabled: false
     service:
       apiExternalPort: 8153 # port for connections from the GitLab backend
     tls:
@@ -981,7 +985,7 @@ upgradeCheck:
 ## Installation of certmananger.
 ## This value replaces `certmanager.install` to allow certmanager schema validation to pass.
 ## See dependencies in Chart.yaml for current version
-installCertmanager: true
+installCertmanager: false
 
 ## Configuration of jetstack/cert-manager
 certmanager:
@@ -992,7 +996,7 @@ certmanager:
 ## https://docs.gitlab.com/charts/architecture/decisions#nginx-ingress
 ## Installation & configuration of charts/ingress-nginx:
 nginx-ingress: &nginx-ingress
-  enabled: true
+  enabled: false
   tcpExternalConfig: "true"
   controller: &nginx-ingress-controller
     podSecurityContext:
@@ -1109,7 +1113,7 @@ haproxy:
 ## Installation & configuration of stable/prometheus
 ## See dependencies in Chart.yaml for current version
 prometheus:
-  install: true
+  install: false
   rbac:
     create: true
   alertmanager:
@@ -1283,7 +1287,7 @@ redis:
   cluster:
     enabled: false
   metrics:
-    enabled: true
+    enabled: false
     image:
       repository: bitnamilegacy/redis-exporter
   sentinel:
@@ -1302,6 +1306,16 @@ redis:
     enabled: false
     image:
       repository: bitnamilegacy/os-shell
+  master:
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    persistence:
+      storageClass: nfs-client
 
 ## Installation & configuration of stable/postgresql
 ## See dependencies in Chart.yaml for current version
@@ -1347,8 +1361,17 @@ postgresql:
                     path: database_password
     podAnnotations:
       postgresql.gitlab/init-revision: "1"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 512Mi
+    persistence:
+      storageClass: nfs-client
   metrics:
-    enabled: true
+    enabled: false
     image:
       repository: bitnamilegacy/postgres-exporter
     service:
@@ -1411,7 +1434,7 @@ shared-secrets:
 ## Installation & configuration of gitlab/gitlab-runner
 ## See dependencies in Chart.yaml for current version
 gitlab-runner:
-  install: true
+  install: false
   rbac:
     create: true
   runners:
@@ -1458,6 +1481,59 @@ gitlab:
     antiAffinityLabels:
       matchLabels:
         app: gitaly
+    resources:
+      requests:
+        cpu: 50m
+        memory: 256Mi
+      limits:
+        cpu: 200m
+        memory: 512Mi
+  
+  ## https://docs.gitlab.com/charts/charts/gitlab/webservice
+  webservice:
+    minReplicas: 1
+    maxReplicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 500m
+        memory: 1Gi
+  
+  ## https://docs.gitlab.com/charts/charts/gitlab/sidekiq
+  sidekiq:
+    minReplicas: 1
+    maxReplicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 512Mi
+  
+  ## https://docs.gitlab.com/charts/charts/gitlab/gitaly
+  gitaly:
+    resources:
+      requests:
+        cpu: 100m
+        memory: 512Mi
+      limits:
+        cpu: 300m
+        memory: 1Gi
+  
+  ## https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell
+  gitlab-shell:
+    minReplicas: 1
+    maxReplicas: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
   ## https://docs.gitlab.com/charts/charts/gitlab/migrations
   #   migrations:
   #     enabled: false
