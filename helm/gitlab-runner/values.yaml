@@ -72,13 +72,13 @@ readinessProbe: {}
 ## The GitLab Server URL (with protocol) that want to register the runner against
 ## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-register
 ##
-# gitlabUrl: https://gitlab.your-domain.com/
+gitlabUrl: https://gitlab.com/
 
 ## The Runner Token for adding new Runners to the GitLab Server. This must
 ## be retrieved from your GitLab instance. It is the token of an already registered runner.
 ## ref: (we don't have docs for that yet, but we want to use an existing token)
 ##
-# runnerToken: ""
+runnerToken: "YOUR_GITLAB_RUNNER_TOKEN_HERE"
 #
 
 ## Unregister all runners before termination
@@ -200,7 +200,7 @@ rbac:
   ## Specifies whether a Role and RoleBinding should be created
   ## If this value is set to `true`, `serviceAccount.create` should also be set to either `true` or `false`
   ##
-  create: false
+  create: true
   ## Define the generated serviceAccountName when create is set to true
   ## It defaults to "gitlab-runner.fullname" if not provided
   ## DEPRECATED: Please use `serviceAccount.name` instead
@@ -216,7 +216,21 @@ rbac:
   ##
   ## ref: https://docs.gitlab.com/runner/executors/kubernetes/index.html#configure-runner-api-permissions
   ##
-  rules: []
+  rules:
+    - resources: ["events"]
+      verbs: ["list", "watch"]
+    - resources: ["pods"]
+      verbs: ["create","delete","get","list","watch"]
+    - apiGroups: [""]
+      resources: ["pods/attach","pods/exec"]
+      verbs: ["get","create","patch","delete"]
+    - apiGroups: [""]
+      resources: ["pods/log"]
+      verbs: ["get","list"]
+    - resources: ["secrets"]
+      verbs: ["create","delete","get","update"]
+    - resources: ["configmaps"]
+      verbs: ["create","delete","get","update","list"]
     # - resources: ["events"]
     #   verbs: ["list", "watch"]
     # - resources: ["namespaces"]
@@ -277,7 +291,7 @@ serviceAccount:
   ## Specifies whether a ServiceAccount should be created
   ##
   ## TODO: Set default to `false`
-  # create: false
+  create: true
   ## The name of the ServiceAccount to use.
   ## If not set and create is `true`, a name is generated using the `gitlab-runner.fullname`` template
   ##
@@ -454,7 +468,21 @@ runners:
     [[runners]]
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
-        image = "alpine"
+        image = "ubuntu:20.04"
+        privileged = false
+        poll_timeout = 180
+        cpu_limit = "500m"
+        memory_limit = "500Mi"
+        cpu_request = "100m"
+        memory_request = "128Mi"
+        service_cpu_limit = "200m"
+        service_memory_limit = "300Mi"
+        service_cpu_request = "100m"
+        service_memory_request = "128Mi"
+        helper_cpu_limit = "200m"
+        helper_memory_limit = "200Mi"
+        helper_cpu_request = "100m"
+        helper_memory_request = "128Mi"
 
   ## Absolute path for an existing runner configuration file
   ## Can be used alongside "volumes" and "volumeMounts" to use an external config file
@@ -569,7 +597,13 @@ podSecurityContext:
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 ##
-resources: {}
+resources:
+  limits:
+    memory: 256Mi
+    cpu: 200m
+  requests:
+    memory: 128Mi
+    cpu: 100m
   # limits:
   #   memory: 256Mi
   #   cpu: 200m
