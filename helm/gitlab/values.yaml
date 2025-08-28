@@ -115,6 +115,11 @@ global:
   monitoring:
     enabled: false
 
+  ## Fix for GitLab Issue #4661 - Disable global migration
+  ## to prevent "unsupported upgrade path" error on fresh installation  
+  migration:
+    enabled: false
+
   gitlab:
     ## Enterprise license for this GitLab installation
     ## Secret created according to https://docs.gitlab.com/charts/installation/secrets#initial-enterprise-license
@@ -1495,8 +1500,10 @@ gitlab:
       nodePort: 30022
   
   ## https://docs.gitlab.com/charts/charts/gitlab/migrations
-  #   migrations:
-  #     enabled: false
+  ## Fix for GitLab Issue #4661 - Disable migrations for fresh installation
+  ## to avoid "unsupported upgrade path" error
+  migrations:
+    enabled: false
   ## https://docs.gitlab.com/charts/charts/gitlab/sidekiq
   #   sidekiq:
   #     enabled: false
