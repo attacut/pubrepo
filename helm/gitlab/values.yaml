@@ -66,7 +66,7 @@ global:
   hosts:
     domain: example.com
     hostSuffix:
-    https: true
+    https: false
     externalIP:
     ssh:
     gitlab: {}
@@ -81,14 +81,14 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#configure-ingress-settings
   ingress:
     apiVersion: ""
-    configureCertmanager: true
+    configureCertmanager: false
     useNewIngressForCerts: false
     provider: nginx
     # class:
     annotations: {}
     enabled: true
-    tls: {}
-    #   enabled: true
+    tls:
+      enabled: false
     #   secretName:
     path: /
     pathType: Prefix
@@ -948,7 +948,7 @@ global:
 ## End of global
 
 upgradeCheck:
-  enabled: true
+  enabled: false
   image: {}
     # repository:
     # tag:
@@ -976,10 +976,10 @@ upgradeCheck:
   priorityClassName: ""
 
 ## Settings for the Let's Encrypt ACME Issuer
-# certmanager-issuer:
-#   # The email address to register certificates requested from Let's Encrypt.
-#   # Required if using Let's Encrypt.
-#   email: email@example.com
+certmanager-issuer:
+  # The email address to register certificates requested from Let's Encrypt.
+  # Required if using Let's Encrypt.
+  email: admin@example.com
 
 
 ## Installation of certmananger.
@@ -989,7 +989,7 @@ installCertmanager: false
 
 ## Configuration of jetstack/cert-manager
 certmanager:
-  installCRDs: true
+  installCRDs: false
   nameOverride: certmanager
 
 ## https://docs.gitlab.com/charts/charts/nginx/
