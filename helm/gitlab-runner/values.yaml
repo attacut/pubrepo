@@ -204,7 +204,7 @@ rbac:
   ## Define the generated serviceAccountName when create is set to true
   ## It defaults to "gitlab-runner.fullname" if not provided
   ## DEPRECATED: Please use `serviceAccount.name` instead
-  generatedServiceAccountName: ""
+  generatedServiceAccountName: default
 
   ## Define list of rules to be added to the rbac role permissions.
   ## Each rule supports the keys:
@@ -466,7 +466,7 @@ runners:
   # runner configuration: https://docs.gitlab.com/runner/configuration/advanced-configuration.html
   config: |
     [[runners]]
-      name = "AssguardK8"
+      name = "gitlab-runner"
       executor = "kubernetes"
       tag_list = ["kubernetes", "docker"]
       run_untagged = true
