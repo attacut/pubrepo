@@ -53,7 +53,7 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#gitlab-version
   ## Comment out to use default appVersion from Chart.yaml (v18.3.1)
   ## This avoids upgrade path conflicts for fresh installations
-  # gitlabVersion: "18.3.1"
+  gitlabVersion: "18.3.1"
 
   ## Global storage class for all PersistentVolumeClaims - ensures data persistence
   storageClass: "nfs-client"
