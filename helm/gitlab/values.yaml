@@ -244,7 +244,7 @@ global:
 
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
   minio:
-    enabled: false  # Disable MinIO to save memory
+    enabled: true  # Enable MinIO object storage
     persistence:
       storageClass: "nfs-client"
       size: 20Gi
@@ -367,7 +367,7 @@ global:
 
     ## https://docs.gitlab.com/charts/charts/globals#lfs-artifacts-uploads-packages-external-mr-diffs-and-dependency-proxy
     object_store:
-      enabled: false
+      enabled: true  # Enable object store to work with MinIO
       proxy_download: true
       storage_options: {}
         # server_side_encryption:
@@ -376,28 +376,28 @@ global:
         # secret:
         # key:
     lfs:
-      enabled: true
+      enabled: true  # Enable LFS with MinIO
       proxy_download: true
       bucket: git-lfs
       connection: {}
         # secret:
         # key:
     artifacts:
-      enabled: true
+      enabled: true  # Enable artifacts with MinIO
       proxy_download: true
       bucket: gitlab-artifacts
       connection: {}
         # secret:
         # key:
     uploads:
-      enabled: true
+      enabled: true  # Enable uploads with MinIO
       proxy_download: true
       bucket: gitlab-uploads
       connection: {}
         # secret:
         # key:
     packages:
-      enabled: true
+      enabled: true  # Enable packages with MinIO
       proxy_download: true
       bucket: gitlab-packages
       connection: {}
@@ -1046,18 +1046,12 @@ nginx-ingress: &nginx-ingress
         memory: 100Mi
     publishService:
       enabled: true
-    replicaCount: 2
+    replicaCount: 1  # Scale down to 1 replica to save memory
     minAvailable: 1
     scope:
       enabled: true
     metrics:
-      enabled: true
-      service:
-        annotations:
-          gitlab.com/prometheus_scrape: "true"
-          gitlab.com/prometheus_port: "10254"
-          prometheus.io/scrape: "true"
-          prometheus.io/port: "10254"
+      enabled: false  # Disable nginx metrics to save memory
     admissionWebhooks:
       enabled: false
   defaultBackend:
@@ -1298,7 +1292,7 @@ redis:
   cluster:
     enabled: false
   metrics:
-    enabled: true
+    enabled: false  # Disable Redis monitoring to save memory
     image:
       repository: bitnamilegacy/redis-exporter
   sentinel:
@@ -1369,7 +1363,7 @@ postgresql:
     podAnnotations:
       postgresql.gitlab/init-revision: "1"
   metrics:
-    enabled: true
+    enabled: false  # Disable PostgreSQL monitoring to save memory
     image:
       repository: bitnamilegacy/postgres-exporter
     service:
@@ -1475,11 +1469,18 @@ traefik:
 gitlab:
   ## https://docs.gitlab.com/charts/charts/gitlab/toolbox
   toolbox:
-    enabled: false  # Disable toolbox to save memory
+    enabled: true  # Enable toolbox but keep minimal
     replicas: 1
     antiAffinityLabels:
       matchLabels:
         app: gitaly
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 100m  
+        memory: 256Mi
   
   ## Enable webservice with NodePort for external access
   webservice:
