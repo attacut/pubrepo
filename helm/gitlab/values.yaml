@@ -53,6 +53,9 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#gitlab-version
   gitlabVersion: "18.3.1"
 
+  ## Global storage class for all PersistentVolumeClaims - ensures data persistence
+  storageClass: "nfs-client"
+
   ## https://docs.gitlab.com/charts/charts/globals#application-resource
   application:
     create: false
@@ -60,9 +63,9 @@ global:
     allowClusterRoles: true
   ## https://docs.gitlab.com/charts/charts/globals#configure-host-settings
   hosts:
-    domain: example.com
+    domain: gitlab.local  # Change this to your domain
     hostSuffix:
-    https: true
+    https: false  # Set to false since we're not using HTTPS initially
     externalIP:
     ssh:
     gitlab: {}
@@ -77,12 +80,12 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#configure-ingress-settings
   ingress:
     apiVersion: ""
-    configureCertmanager: true
+    configureCertmanager: false
     useNewIngressForCerts: false
     provider: nginx
     # class:
     annotations: {}
-    enabled: true
+    enabled: false  # Disable ingress, use NodePort instead
     tls: {}
     #   enabled: true
     #   secretName:
@@ -240,6 +243,9 @@ global:
   ## https://docs.gitlab.com/charts/charts/globals#configure-minio-settings
   minio:
     enabled: true
+    persistence:
+      storageClass: "nfs-client"
+      size: 20Gi
     credentials: {}
       # secret:
 
@@ -981,7 +987,7 @@ upgradeCheck:
 ## Installation of certmananger.
 ## This value replaces `certmanager.install` to allow certmanager schema validation to pass.
 ## See dependencies in Chart.yaml for current version
-installCertmanager: true
+installCertmanager: false  # Disable cert-manager - feature เสริม
 
 ## Configuration of jetstack/cert-manager
 certmanager:
@@ -992,7 +998,7 @@ certmanager:
 ## https://docs.gitlab.com/charts/architecture/decisions#nginx-ingress
 ## Installation & configuration of charts/ingress-nginx:
 nginx-ingress: &nginx-ingress
-  enabled: true
+  enabled: false  # Disable nginx-ingress - ใช้ NodePort แทน
   tcpExternalConfig: "true"
   controller: &nginx-ingress-controller
     podSecurityContext:
@@ -1109,7 +1115,7 @@ haproxy:
 ## Installation & configuration of stable/prometheus
 ## See dependencies in Chart.yaml for current version
 prometheus:
-  install: true
+  install: false  # Disable monitoring - feature เสริม
   rbac:
     create: true
   alertmanager:
@@ -1280,6 +1286,13 @@ redis:
     existingSecretKey: redis-password
     usePasswordFiles: true
   architecture: standalone
+  master:
+    persistence:
+      enabled: true
+      storageClass: "nfs-client"
+      size: 8Gi
+      accessModes:
+        - ReadWriteOnce
   cluster:
     enabled: false
   metrics:
@@ -1326,6 +1339,12 @@ postgresql:
     image:
       repository: bitnamilegacy/os-shell
   primary:
+    persistence:
+      enabled: true
+      storageClass: "nfs-client"
+      size: 20Gi
+      accessModes:
+        - ReadWriteOnce
     initdb:
       scriptsConfigMap: '{{ include "gitlab.psql.initdbscripts" $}}'
     extraVolumeMounts:
@@ -1411,7 +1430,7 @@ shared-secrets:
 ## Installation & configuration of gitlab/gitlab-runner
 ## See dependencies in Chart.yaml for current version
 gitlab-runner:
-  install: true
+  install: false  # Disable runner - can add later if needed
   rbac:
     create: true
   runners:
@@ -1458,20 +1477,33 @@ gitlab:
     antiAffinityLabels:
       matchLabels:
         app: gitaly
+  
+  ## Enable webservice with NodePort for external access
+  webservice:
+    service:
+      type: NodePort
+      nodePort:
+        http: 30080
+        https: 30443
+  
+  ## Enable GitLab Shell with NodePort for SSH access  
+  gitlab-shell:
+    service:
+      type: NodePort
+      nodePort: 30022
+  
   ## https://docs.gitlab.com/charts/charts/gitlab/migrations
   #   migrations:
-  #     enabled: false
-  ## https://docs.gitlab.com/charts/charts/gitlab/webservice
-  #   webservice:
   #     enabled: false
   ## https://docs.gitlab.com/charts/charts/gitlab/sidekiq
   #   sidekiq:
   #     enabled: false
   ## https://docs.gitlab.com/charts/charts/gitlab/gitaly
-  #   gitaly:
-  ## https://docs.gitlab.com/charts/charts/gitlab/gitlab-shell
-  #   gitlab-shell:
-  #     enabled: false
+  gitaly:
+    persistence:
+      storageClass: "nfs-client" 
+      size: 50Gi
+      accessMode: ReadWriteOnce
   ## https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages
   #   gitlab-pages:
   ## https://docs.gitlab.com/charts/charts/gitlab/kas
