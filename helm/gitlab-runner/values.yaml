@@ -470,6 +470,7 @@ runners:
       url = "{{ .Values.gitlabUrl }}"
       token = "{{ .Values.runnerToken }}"
       executor = "kubernetes"
+      environment = ["FF_SCRIPT_SECTIONS=true"]
       tag_list = ["kubernetes", "docker", "arm64"]
       run_untagged = true
       [runners.kubernetes]
