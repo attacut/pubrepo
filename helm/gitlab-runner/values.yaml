@@ -475,7 +475,7 @@ runners:
       [runners.kubernetes]
         namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
         image = "docker.io/library/alpine:latest"
-        privileged = false
+        privileged = true
         poll_timeout = 1800
         cpu_limit = "200m"
         memory_limit = "256Mi"
