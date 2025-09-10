@@ -6,7 +6,7 @@
 global:
   # enabled is the master enabled switch. Setting this to true or false
   # will enable or disable all the components within this chart by default.
-  enabled: false
+  enabled: true
 
   # The namespace to deploy to. Defaults to the `helm` installation namespace.
   namespace: hashicorp-vault
@@ -46,7 +46,7 @@ global:
 injector:
   # True if you want to enable vault agent injection.
   # @default: global.enabled
-  enabled: "-"
+  enabled: false
 
   replicas: 1
 
@@ -1041,7 +1041,7 @@ ui:
   # serviceType can be used to control the type of service created. For
   # example, setting this to "LoadBalancer" will create an external load
   # balancer (for supported K8S installations) to access the UI.
-  enabled: true
+  enabled: false
   publishNotReadyAddresses: true
   # The service should only contain selectors for active Vault pod
   activeVaultPodOnly: false
