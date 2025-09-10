@@ -477,7 +477,19 @@ server:
   # extraInitContainers is a list of init containers. Specified as a YAML list.
   # This is useful if you need to run a script to provision TLS certificates or
   # write out configuration files in a dynamic way.
-  extraInitContainers: null
+  extraInitContainers: 
+    - name: fix-permissions
+      image: "busybox:1.35"
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          chown -R 100:1000 /vault/data
+          chmod -R 755 /vault/data
+      volumeMounts:
+        - name: data
+          mountPath: /vault/data
+      securityContext:
+        runAsUser: 0
     # # This example installs a plugin pulled from github into the /usr/local/libexec/vault/oauthapp folder,
     # # which is defined in the volumes value.
     # - name: oauthapp
@@ -793,7 +805,9 @@ server:
   # persistentVolumeClaimRetentionPolicy:
   #   whenDeleted: Retain
   #   whenScaled: Retain
-  persistentVolumeClaimRetentionPolicy: {}
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
 
   # This configures the Vault Statefulset to create a PVC for audit
   # logs.  Once Vault is deployed, initialized, and unsealed, Vault must
@@ -1036,8 +1050,17 @@ server:
     # pod: {}
     # container: {}
     securityContext:
-      pod: {}
-      container: {}
+      pod: 
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+      container:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
 
   # Should the server pods run on the host network
   hostNetwork: false
