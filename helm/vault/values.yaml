@@ -479,7 +479,7 @@ server:
   # write out configuration files in a dynamic way.
   extraInitContainers: 
     - name: fix-permissions
-      image: "busybox:1.35"
+      image: "docker.io/library/busybox:1.35"
       command: ["/bin/sh", "-c"]
       args:
         - |
