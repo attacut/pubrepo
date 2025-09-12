@@ -786,6 +786,13 @@ server:
     annotations: {}
     # Labels to apply to the PVC
     labels: {}
+    mountOptions:
+      - rw
+      - sync
+      - hard
+      - intr
+      - timeo=600
+      - retrans=5
 
   # Persistent Volume Claim (PVC) retention policy
   # ref: https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#persistentvolumeclaim-retention
