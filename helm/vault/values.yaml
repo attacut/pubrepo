@@ -887,12 +887,12 @@ server:
     # Set the api_addr configuration for Vault HA
     # See https://developer.hashicorp.com/vault/docs/configuration#api_addr
     # If set to null, this will be set to the Pod IP Address
-    apiAddr: http://$(POD_IP):8200
+    apiAddr: "https://vault-0.vault-internal.vault.svc.cluster.local:8200"
 
     # Set the cluster_addr configuration for Vault HA
     # See https://developer.hashicorp.com/vault/docs/configuration#cluster_addr
     # If set to null, this will be set to https://$(HOSTNAME).{{ template "vault.fullname" . }}-internal:8201
-    clusterAddr: http://$(POD_IP):8201
+    clusterAddr: "https://vault-0.vault-internal.vault.svc.cluster.local:8201"
 
     # Enables Vault's integrated Raft storage.  Unlike the typical HA modes where
     # Vault's persistence is external (such as Consul), enabling Raft mode will create
