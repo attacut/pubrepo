@@ -783,8 +783,7 @@ server:
     # Access Mode of the storage device being used for the PVC
     accessMode: ReadWriteOnce
     # Annotations to apply to the PVC
-    annotations:
-      volume.beta.kubernetes.io/mount-options: "uid=100,gid=1000,hard,intr"
+    annotations: {}
     # Labels to apply to the PVC
     labels: {}
 
@@ -926,7 +925,7 @@ server:
 
         storage "raft" {
           path = "/vault/data"
-      
+
           retry_join {
             leader_api_addr = "http://vault-0.vault-internal.vault.svc.cluster.local:8200"
           }
@@ -935,13 +934,6 @@ server:
           }
           retry_join {
             leader_api_addr = "http://vault-2.vault-internal.vault.svc.cluster.local:8200"
-          }
-          
-          autopilot {
-            cleanup_dead_servers = true
-            dead_server_last_contact_threshold = "300s"
-            min_quorum = 3
-            server_stabilization_time = "90s"
           }
         }
         
