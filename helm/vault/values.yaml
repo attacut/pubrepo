@@ -859,6 +859,11 @@ server:
         path = "/vault/data"
       }
 
+      # Set UI path prefix
+      ui_config {
+        ui_path = "/vault/"
+      }
+
       # Example configuration for using auto-unseal, using Google Cloud KMS. The
       # GKMS keys must already exist, and the cluster must have a service account
       # that is authorized to access GCP KMS.
