@@ -6,9 +6,6 @@ metadata:
   namespace: {{ .Values.global.namespace | default .Release.Namespace }}
   labels:
     app.kubernetes.io/name: {{ include "vault.name" . }}
-  annotations:
-    {{- toYaml . | nindent 4 }}
-  {{- end }}
 spec:
   hosts:
     {{- range .Values.virtualService.hosts }}
