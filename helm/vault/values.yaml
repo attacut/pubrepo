@@ -1082,6 +1082,38 @@ ui:
   # of the annotations to apply to the ui service
   annotations: {}
 
+# Virtual Service configuration for Istio
+virtualService:
+  # Enable or disable VirtualService creation
+  enabled: true
+  
+  # Hosts that the VirtualService will apply to
+  hosts:
+    - "vault.bifrost-one.assguard.local"
+  # Gateways that the VirtualService will be bound to
+  gateways:
+    - istio-system/global-incoming-gateway
+  
+  # HTTP routing configuration
+  http:
+    # URL prefix to match for routing to Vault
+    prefix: "/"
+    # Optional: Rewrite the URI before forwarding to the service
+    # rewrite: "/"
+    # Optional: Request timeout
+    # timeout: "30s"
+    # Optional: Header manipulation
+    # headers:
+    #   request:
+    #     add:
+    #       x-forwarded-proto: "https"
+  
+  # Additional labels for the VirtualService
+  labels: {}
+  
+  # Additional annotations for the VirtualService
+  annotations: {}
+
 # secrets-store-csi-driver-provider-vault
 csi:
   # True if you want to install a secrets-store-csi-driver-provider-vault daemonset.

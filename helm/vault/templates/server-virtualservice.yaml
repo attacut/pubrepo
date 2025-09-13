@@ -1,0 +1,45 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ include "vault.fullname" . }}-virtualservice
+  namespace: {{ .Values.global.namespace | default .Release.Namespace }}
+  labels:
+    {{- include "vault.labels" . | nindent 4 }}
+    {{- with .Values.virtualService.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.virtualService.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  hosts:
+    {{- range .Values.virtualService.hosts }}
+    - {{ . | quote }}
+    {{- end }}
+  gateways:
+    {{- range .Values.virtualService.gateways }}
+    - {{ . }}
+    {{- end }}
+  http:
+    - match:
+        - uri:
+            prefix: {{ .Values.virtualService.http.prefix | default "/vault/" }}
+      route:
+        - destination:
+            host: {{ include "vault.fullname" . }}.{{ .Values.global.namespace | default .Release.Namespace }}.svc.cluster.local
+            port:
+              number: {{ .Values.ui.externalPort | default 8200 }}
+      {{- if .Values.virtualService.http.rewrite }}
+      rewrite:
+        uri: {{ .Values.virtualService.http.rewrite | quote }}
+      {{- end }}
+      {{- if .Values.virtualService.http.timeout }}
+      timeout: {{ .Values.virtualService.http.timeout }}
+      {{- end }}
+      {{- with .Values.virtualService.http.headers }}
+      headers:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}
