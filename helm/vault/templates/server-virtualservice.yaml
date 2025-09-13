@@ -5,11 +5,7 @@ metadata:
   name: {{ include "vault.fullname" . }}-virtualservice
   namespace: {{ .Values.global.namespace | default .Release.Namespace }}
   labels:
-    {{- include "vault.labels" . | nindent 4 }}
-    {{- with .Values.virtualService.labels }}
-    {{- toYaml . | nindent 4 }}
-    {{- end }}
-  {{- with .Values.virtualService.annotations }}
+    app.kubernetes.io/name: {{ include "vault.name" . }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
