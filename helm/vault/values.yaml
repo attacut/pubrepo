@@ -855,13 +855,6 @@ server:
         #  unauthenticated_metrics_access = "true"
         #}
       }
-      
-      ui_config {
-        enabled = true
-        address = "[::]:8200"
-        path = "/vault/"
-      }
-      
       storage "file" {
         path = "/vault/data"
       }
@@ -1052,8 +1045,8 @@ ui:
   publishNotReadyAddresses: true
   # The service should only contain selectors for active Vault pod
   activeVaultPodOnly: false
-  serviceType: "NodePort"
-  serviceNodePort: 30200
+  serviceType: "ClusterIP"
+  # serviceNodePort: 30200
   externalPort: 8200
   targetPort: 8200
 
