@@ -1089,7 +1089,7 @@ virtualService:
   
   # Hosts that the VirtualService will apply to
   hosts:
-    - "vault.assguard.local"
+    - "vault.assguard.internal"
   # Gateways that the VirtualService will be bound to
   gateways:
     - istio-system/global-incoming-gateway
