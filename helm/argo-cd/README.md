@@ -1,3 +1,15 @@
+# Memo
+
+Helm Manual install 
+```
+helm upgrade argocd .   -n argocd   -f values.yaml
+```
+
+Apply istio virtualservices
+```
+kubectl apply -f vs.yaml
+```
+
 # Argo CD Chart
 
 A Helm chart for Argo CD, a declarative, GitOps continuous delivery tool for Kubernetes.
