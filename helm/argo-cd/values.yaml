@@ -2780,7 +2780,7 @@ repoServer:
   # -- Init containers to add to the repo server pods
   initContainers:
     - name: download-tools
-      image: alpine:3.18
+      image: docker.io/library/alpine:3.18
       command: [sh, -c]
       args:
         - >-
