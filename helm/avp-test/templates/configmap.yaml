@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  annotations:
+    avp.kubernetes.io/path: "{{ .Values.vault.path }}"
+data:
+  # Example with inline path syntax
+  app.properties: |
+    database.host=<host>
+    database.port=<port>
+    database.name=<database>
+    app.environment=production
