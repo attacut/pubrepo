@@ -2724,6 +2724,9 @@ repoServer:
         - mountPath: /home/argocd/cmp-server/config/plugin.yaml
           subPath: argocd-vault-plugin.yaml
           name: argocd-cmp-cm
+        - mountPath: /usr/local/bin/argocd-vault-plugin
+          name: custom-tools
+          subPath: argocd-vault-plugin
       env:
         - name: AVP_TYPE
           value: vault
@@ -2775,7 +2778,19 @@ repoServer:
     #       name: cmp-tmp
 
   # -- Init containers to add to the repo server pods
-  initContainers: []
+  initContainers:
+    - name: download-tools
+      image: alpine:3.18
+      command: [sh, -c]
+      args:
+        - >-
+          wget -O argocd-vault-plugin
+          https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v1.17.0/argocd-vault-plugin_1.17.0_linux_amd64 &&
+          chmod +x argocd-vault-plugin &&
+          mv argocd-vault-plugin /custom-tools/
+      volumeMounts:
+        - mountPath: /custom-tools
+          name: custom-tools
 
   # -- Additional volumeMounts to the repo server main container
   volumeMounts: []
@@ -2786,6 +2801,8 @@ repoServer:
       configMap:
         name: argocd-cmp-cm
     - name: argocd-vault-plugin-tmp
+      emptyDir: {}
+    - name: custom-tools
       emptyDir: {}
   #  - name: cmp-tmp
   #    emptyDir: {}
