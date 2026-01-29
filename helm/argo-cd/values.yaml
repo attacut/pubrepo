@@ -2752,6 +2752,8 @@ repoServer:
           value: "http://vault.vault.svc.cluster.local:8200"
         - name: AVP_K8S_ROLE
           value: "argocd"
+        - name: AVP_K8S_AUDIENCE
+          value: "vault"
     - name: argocd-vault-plugin-helm
       command: [/var/run/argocd/argocd-cmp-server]
       image: quay.io/argoproj/argocd:v2.9.3
@@ -2780,10 +2782,8 @@ repoServer:
           value: "http://vault.vault.svc.cluster.local:8200"
         - name: AVP_K8S_ROLE
           value: "argocd"
-        - name: VAULT_ADDR
-          value: "http://vault.vault.svc.cluster.local:8200"
-        - name: AVP_K8S_ROLE
-          value: "argocd-avp"
+        - name: AVP_K8S_AUDIENCE
+          value: "vault"
     # - name: cmp-my-plugin
     #   command:
     #     - "/var/run/argocd/argocd-cmp-server"
