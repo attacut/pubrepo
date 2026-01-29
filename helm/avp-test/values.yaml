@@ -11,5 +11,5 @@ service:
 
 # Vault path for secrets
 vault:
-  path: secret/data/kv/test
+  path: /v1/kv/data/test
   # Example: secret/data/myapp/database
