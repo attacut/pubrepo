@@ -2753,7 +2753,7 @@ repoServer:
         - name: AVP_K8S_ROLE
           value: "argocd-avp"
         - name: AVP_K8S_AUDIENCE
-          value: "vault"
+          value: "https://kubernetes.default.svc.cluster.local"
     - name: argocd-vault-plugin-helm
       command: [/var/run/argocd/argocd-cmp-server]
       image: quay.io/argoproj/argocd:v2.9.3
@@ -2783,7 +2783,7 @@ repoServer:
         - name: AVP_K8S_ROLE
           value: "argocd-avp"
         - name: AVP_K8S_AUDIENCE
-          value: "vault"
+          value: "https://kubernetes.default.svc.cluster.local"
     # - name: cmp-my-plugin
     #   command:
     #     - "/var/run/argocd/argocd-cmp-server"
