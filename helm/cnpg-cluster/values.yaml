@@ -25,10 +25,10 @@ database:
 
 resources:
   requests:
-    memory: 250Mi
+    memory: 500Mi
     cpu: 100m
   limits:
-    memory: 500Mi
+    memory: 1000Mi
     cpu: 500m
 
 postgresql:
