@@ -9,7 +9,7 @@ cluster:
 
 storage:
   storageClass: "nfs-client"
-  size: 40Gi
+  size: 30Gi
 
 superuser:
   username: postgres
@@ -25,11 +25,11 @@ database:
 
 resources:
   requests:
-    memory: 128Mi
+    memory: 250Mi
     cpu: 100m
   limits:
-    memory: 1Gi
-    cpu: 1000m
+    memory: 500Mi
+    cpu: 500m
 
 postgresql:
   parameters:
