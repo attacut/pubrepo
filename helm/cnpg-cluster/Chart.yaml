@@ -1,0 +1,12 @@
+apiVersion: v2
+name: cnpg-cluster
+description: CloudNativePG PostgreSQL Cluster (standalone)
+type: application
+version: 1.0.0
+appVersion: "16.2"
+keywords:
+  - postgresql
+  - postgres
+  - database
+  - cnpg
+home: https://cloudnative-pg.io
