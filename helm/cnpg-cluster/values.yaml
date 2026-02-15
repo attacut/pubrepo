@@ -9,7 +9,7 @@ cluster:
 
 storage:
   storageClass: "nfs-client"
-  size: 30Gi
+  size: 40Gi
 
 superuser:
   username: postgres
